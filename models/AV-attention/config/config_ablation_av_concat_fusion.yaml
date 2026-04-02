@@ -1,0 +1,82 @@
+OUTPUT_DIR: 日志和模型输出
+SAVE_CONFIG_NAME: 上次模型配置.yaml
+
+CKPTS_DIR: E:/Graduation matters/CODE/Multi-modal PD Estimation based on Gyp-attentional Fusion/ckpts
+TYPE: AV-attention-ConcatFusion-Ablation
+
+MANUAL_SEED: 5
+LOG_TITLE: PD AV multimodal, concat fusion (no CA-AFF)
+
+DATA:
+  TRAIN_ROOT_DIR: E:/Graduation matters/数据集/预处理-10+2不去噪/train/
+  VALIDATION_ROOT_DIR: E:/Graduation matters/数据集/预处理-10+2不去噪/test/
+  TEST_ROOT_DIR: E:/Graduation matters/数据集/预处理-10+2不去噪/test/
+  VISUAL_WITH_FACE3D: True
+  PADDING:
+  RESCALE_SIZE:
+  CROP_SIZE:
+  BATCH_SIZE: 128
+  NUM_WORKERS: 0
+
+MODEL:
+  PD_THRESHOLD: 0
+  EPOCHS: 100
+  EARLY_STOP_PATIENCE: 15
+  WEIGHTS:
+    TYPE: new
+    DATE:
+    PATH: model_weights
+    NAME:
+    CUSTOM_ABSOLUTE_PATH:
+    INCLUDED: ['audio_net', 'visual_net', 'fusion_net', 'evaluator']
+  VISUAL_NET:
+    INPUT_DIM: 3
+    CONV_HIDDEN: 256
+    TRANSFORMER_DIM: 256
+    DIM_FEEDFORWARD: 2048
+    LEARNABLE_PE: True
+    OUTPUT_DIM: 256
+    NUM_LAYERS: 4
+    ACTIVATION: relu
+    NORM: bn
+    DROPOUT: 0.5
+  AUDIO_NET:
+    INPUT_DIM: 39
+    CONV_HIDDEN: 256
+    LSTM_HIDDEN: 128
+    OUTPUT_DIM: 256
+    NUM_LAYERS: 2
+    ACTIVATION: relu
+    NORM: bn
+    DROPOUT: 0.5
+  FUSION_NET:
+    USE_PDAF_PAPER: False
+    NUM_HEADS: 4
+    IAFF_R: 4
+    INPUT_DIM: 1
+    HIDDEN_DIM: 32
+    BASE_WIDTH: 256
+    FUSE_TYPE: CAAFF
+  EVALUATOR:
+    PREDICT_TYPE: pd-binary
+    INPUT_FEATURE_DIM: 256
+    OUTPUT_DIM: 1
+    N_CLASSES: 2
+  CRITERION:
+    USE_WEIGHTS: False
+    USE_CB_LOSS: False
+    USE_CB_BCE_LOSS: True
+    CB_BETA: 0.99
+    CB_GAMMA: 2
+    CB_LOSS_TYPE: cb_focal
+    NUM_CLASSES: 2
+  OPTIMIZER:
+    TYPE: Adam
+    LR: 1e-4
+    WEIGHT_DECAY: 5e-4
+    RHO: 0.05
+    USE_SAM: False
+    USE_LOOKAHEAD: True
+  SCHEDULER:
+    STEP_SIZE: 10
+    GAMMA: 0.90

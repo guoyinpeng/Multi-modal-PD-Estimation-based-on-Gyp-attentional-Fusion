@@ -1,0 +1,58 @@
+OUTPUT_DIR: 日志和模型输出
+SAVE_CONFIG_NAME: 上次模型配置.yaml
+CKPTS_DIR: E:/Graduation matters/CODE/Multi-modal PD Estimation based on Gyp-attentional Fusion/ckpts
+TYPE: Audio-only-CNNLSTM-Baseline
+
+MANUAL_SEED: 5
+LOG_TITLE: PD Audio-only CNN+LSTM (uni-LSTM) baseline
+
+DATA:
+  TRAIN_ROOT_DIR: E:/Graduation matters/数据集/预处理-10+2不去噪/train/
+  TEST_ROOT_DIR: E:/Graduation matters/数据集/预处理-10+2不去噪/test/
+  VISUAL_WITH_FACE3D: True
+  BATCH_SIZE: 128
+  NUM_WORKERS: 0
+
+MODEL:
+  EPOCHS: 100
+  EARLY_STOP_PATIENCE: 15
+  WEIGHTS:
+    TYPE: new
+    DATE:
+    PATH: model_weights
+    NAME:
+    CUSTOM_ABSOLUTE_PATH:
+    INCLUDED: ['audio_net', 'evaluator']
+  AUDIO_NET:
+    BACKBONE: cnn_lstm
+    INPUT_DIM: 39
+    CONV_HIDDEN: 256
+    LSTM_HIDDEN: 128
+    OUTPUT_DIM: 256
+    NUM_LAYERS: 2
+    TRANSFORMER_DIM: 256
+    DIM_FEEDFORWARD: 2048
+    LEARNABLE_PE: True
+    ACTIVATION: relu
+    NORM: bn
+    DROPOUT: 0.5
+  EVALUATOR:
+    PREDICT_TYPE: pd-binary
+    INPUT_FEATURE_DIM: 256
+    N_CLASSES: 2
+  CRITERION:
+    USE_WEIGHTS: False
+    USE_CB_LOSS: False
+    USE_CB_BCE_LOSS: True
+    CB_BETA: 0.99
+    CB_GAMMA: 2
+    NUM_CLASSES: 2
+  OPTIMIZER:
+    TYPE: Adam
+    LR: 1.0e-4
+    WEIGHT_DECAY: 5.0e-4
+    USE_SAM: False
+    USE_LOOKAHEAD: True
+  SCHEDULER:
+    STEP_SIZE: 10
+    GAMMA: 0.90

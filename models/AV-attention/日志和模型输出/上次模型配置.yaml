@@ -1,0 +1,80 @@
+!!omap
+- OUTPUT_DIR: ��־��ģ�����
+- SAVE_CONFIG_NAME: �ϴ�ģ������.yaml
+- CKPTS_DIR: E:/Graduation matters/CODE/Multi-modal PD Estimation based on Gyp-attentional
+    Fusion/ckpts
+- TYPE: AV-attention-BCWithLogitsLoss
+- MANUAL_SEED: 5
+- LOG_TITLE: PD Detection with audio and visual data, ConvBiLSTM, PD-Binary
+- DATA: !!omap
+  - TRAIN_ROOT_DIR: E:/Graduation matters/���ݼ�/Ԥ����-10+2��ȥ��/train/
+  - VALIDATION_ROOT_DIR: E:/Graduation matters/���ݼ�/Ԥ����-10+2��ȥ��/test/
+  - TEST_ROOT_DIR: E:/Graduation matters/���ݼ�/Ԥ����-10+2��ȥ��/test/
+  - VISUAL_WITH_FACE3D: true
+  - PADDING:
+  - RESCALE_SIZE:
+  - CROP_SIZE:
+  - BATCH_SIZE: 128
+  - NUM_WORKERS: 0
+- MODEL: !!omap
+  - PD_THRESHOLD: 0
+  - EPOCHS: 100
+  - WEIGHTS: !!omap
+    - TYPE: new
+    - DATE:
+    - PATH: model_weights
+    - NAME: AV-attention_2024-12-20_14-02-42_best_f1=0.7169811320754718_epoch42.pth
+    - CUSTOM_ABSOLUTE_PATH: E:/Graduation matters/CODE/Multi-modal PD Estimation based
+        on Gyp-attentional Fusion/models/AV-attention/model_weights/epoch
+        47/AV-attention-BCWithLogitsLoss_2025-05-18_17-01-11_best_acc=0.644_epoch47.pth
+    - INCLUDED:
+      - audio_net
+      - visual_net
+      - fusion_net
+      - evaluator
+  - VISUAL_NET: !!omap
+    - INPUT_DIM: 3
+    - CONV_HIDDEN: 256
+    - TRANSFORMER_DIM: 256
+    - OUTPUT_DIM: 256
+    - NUM_LAYERS: 4
+    - ACTIVATION: relu
+    - NORM: bn
+    - DROPOUT: 0.5
+  - AUDIO_NET: !!omap
+    - INPUT_DIM: 39
+    - CONV_HIDDEN: 256
+    - LSTM_HIDDEN: 256
+    - OUTPUT_DIM: 256
+    - NUM_LAYERS: 4
+    - ACTIVATION: relu
+    - NORM: bn
+    - DROPOUT: 0.5
+  - FUSION_NET: !!omap
+    - INPUT_DIM: 1
+    - HIDDEN_DIM: 32
+    - BASE_WIDTH: 256
+    - FUSE_TYPE: iAFF
+  - EVALUATOR: !!omap
+    - PREDICT_TYPE: pd-binary
+    - INPUT_FEATURE_DIM: 512
+    - OUTPUT_DIM: 1
+    - N_CLASSES: 2
+  - CRITERION: !!omap
+    - USE_WEIGHTS: false
+    - USE_CB_LOSS: false
+    - USE_CB_BCE_LOSS: true
+    - CB_BETA: 0.99
+    - CB_GAMMA: 2
+    - CB_LOSS_TYPE: cb_focal
+    - NUM_CLASSES: 2
+  - OPTIMIZER: !!omap
+    - TYPE: Adam
+    - LR: 0.0001
+    - WEIGHT_DECAY: 0.0005
+    - RHO: 0.05
+    - USE_SAM: false
+    - USE_LOOKAHEAD: true
+  - SCHEDULER: !!omap
+    - STEP_SIZE: 10
+    - GAMMA: 0.9

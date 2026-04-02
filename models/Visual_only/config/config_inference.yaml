@@ -1,0 +1,59 @@
+OUTPUT_DIR: 日志和模型输出
+SAVE_CONFIG_NAME: 上次模型配置.yaml
+CKPTS_DIR: E:/Graduation matters/CODE/Multi-modal PD Estimation based on Gyp-attentional Fusion/ckpts
+TYPE: Visual-only-Transformer-PD
+
+MANUAL_SEED: 5
+LOG_TITLE: PD Visual-only + CB-Focal BCE
+
+DATA:
+  TRAIN_ROOT_DIR: E:/Graduation matters/数据集/预处理-10+2不去噪/train/
+  TEST_ROOT_DIR: E:/Graduation matters/数据集/预处理-10+2不去噪/test/
+  VISUAL_WITH_FACE3D: True
+  BATCH_SIZE: 128
+  NUM_WORKERS: 0
+
+MODEL:
+  EPOCHS: 100
+  EARLY_STOP_PATIENCE: 15
+  WEIGHTS:
+    TYPE: new
+    DATE:
+    PATH: model_weights
+    NAME:
+    CUSTOM_ABSOLUTE_PATH:
+    INCLUDED: ['visual_net', 'evaluator']
+  VISUAL_NET:
+    BACKBONE: transformer
+    INPUT_DIM: 3
+    CONV_HIDDEN: 256
+    TRANSFORMER_DIM: 256
+    DIM_FEEDFORWARD: 2048
+    LEARNABLE_PE: True
+    OUTPUT_DIM: 256
+    NUM_LAYERS: 4
+    LSTM_HIDDEN: 128
+    POOL_TYPE: mean
+    ACTIVATION: relu
+    NORM: bn
+    DROPOUT: 0.5
+  EVALUATOR:
+    PREDICT_TYPE: pd-binary
+    INPUT_FEATURE_DIM: 256
+    N_CLASSES: 2
+  CRITERION:
+    USE_WEIGHTS: False
+    USE_CB_LOSS: False
+    USE_CB_BCE_LOSS: True
+    CB_BETA: 0.99
+    CB_GAMMA: 2
+    NUM_CLASSES: 2
+  OPTIMIZER:
+    TYPE: Adam
+    LR: 1.0e-4
+    WEIGHT_DECAY: 5.0e-4
+    USE_SAM: False
+    USE_LOOKAHEAD: True
+  SCHEDULER:
+    STEP_SIZE: 10
+    GAMMA: 0.90
